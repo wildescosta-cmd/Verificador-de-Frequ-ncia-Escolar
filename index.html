@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Calculadora de Frequência de alunos</title>
+
+
+    <style>
+
+        /* =========================================================
+           CONFIGURAÇÕES GERAIS
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            background-color: #f4f6f9;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            min-height: 100vh;
+
+            padding: 25px;
+        }
+
+
+        /* =========================================================
+           CARTÃO PRINCIPAL
+        ========================================================= */
+
+        .card {
+
+            background: #ffffff;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.12);
+
+            width: 100%;
+
+            max-width: 1200px;
+
+            padding: 30px;
+        }
+
+
+        /* =========================================================
+           TÍTULO
+        ========================================================= */
+
+        h2 {
+
+            color: #1a2a3a;
+
+            font-size: 2rem;
+
+            margin-bottom: 28px;
+
+            text-align: center;
+        }
+
+
+        h2 small {
+
+            font-size: 1.15rem;
+
+            font-weight: normal;
+        }
+
+
+        /* =========================================================
+           DIVISÃO DA TELA EM DUAS PARTES
+        ========================================================= */
+
+        .layout {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 25px;
+
+            align-items: stretch;
+        }
+
+
+        /* =========================================================
+           PAINÉIS ESQUERDO E DIREITO
+        ========================================================= */
+
+        .painel {
+
+            background: #ffffff;
+
+            border: 2px solid #e2e8f0;
+
+            border-radius: 14px;
+
+            padding: 22px;
+        }
+
+
+        .painel h3 {
+
+            font-size: 1.4rem;
+
+            color: #1a2a3a;
+
+            margin-bottom: 20px;
+
+            padding-bottom: 12px;
+
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+
+        /* =========================================================
+           CAMPOS
+        ========================================================= */
+
+        .form-group {
+
+            margin-bottom: 20px;
+        }
+
+
+        label {
+
+            display: block;
+
+            font-size: 1.1rem;
+
+            font-weight: 700;
+
+            color: #4a5568;
+
+            margin-bottom: 8px;
+        }
+
+
+        select,
+        input {
+
+            width: 100%;
+
+            padding: 14px 15px;
+
+            border: 2px solid #cbd5e0;
+
+            border-radius: 10px;
+
+            font-size: 1.15rem;
+
+            outline: none;
+
+            transition:
+                border-color 0.2s,
+                box-shadow 0.2s;
+        }
+
+
+        select:focus,
+        input:focus {
+
+            border-color: #3182ce;
+
+            box-shadow:
+                0 0 0 3px rgba(49, 130, 206, 0.12);
+        }
+
+
+        /* =========================================================
+           CAMPOS DOS MESES
+        ========================================================= */
+
+        .mes-row {
+
+            display: flex;
+
+            gap: 12px;
+
+            margin-bottom: 12px;
+
+            background: #f8fafc;
+
+            padding: 14px;
+
+            border-radius: 10px;
+
+            border: 1px solid #edf2f7;
+        }
+
+
+        .mes-col {
+
+            flex: 1;
+        }
+
+
+        .mes-col label {
+
+            font-size: 0.95rem;
+
+            color: #4a5568;
+        }
+
+
+        .mes-col input {
+
+            font-size: 1.15rem;
+
+            font-weight: 600;
+        }
+
+
+        /* =========================================================
+           BOTÃO
+        ========================================================= */
+
+        button {
+
+            width: 100%;
+
+            padding: 17px;
+
+            background-color: #3182ce;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 10px;
+
+            font-size: 1.25rem;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            margin-top: 12px;
+
+            transition:
+                background 0.2s,
+                transform 0.1s;
+        }
+
+
+        button:hover {
+
+            background-color: #2b6cb0;
+        }
+
+
+        button:active {
+
+            transform: scale(0.99);
+        }
+
+
+        /* =========================================================
+           PAINEL DE RESULTADO
+        ========================================================= */
+
+        .resultado-painel {
+
+            min-height: 100%;
+        }
+
+
+        #detalhesMeses {
+
+            margin-top: 0;
+
+            min-height: 200px;
+        }
+
+
+        /* =========================================================
+           MENSAGEM INICIAL
+        ========================================================= */
+
+        .resultado-vazio {
+
+            min-height: 250px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            text-align: center;
+
+            color: #718096;
+
+            font-size: 1.2rem;
+
+            border: 2px dashed #cbd5e0;
+
+            border-radius: 12px;
+
+            padding: 25px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================================================
+           RESULTADO DE CADA MÊS
+        ========================================================= */
+
+        .mes-card-result {
+
+            background: #f8fafc;
+
+            border-radius: 12px;
+
+            padding: 18px;
+
+            margin-bottom: 15px;
+
+            text-align: left;
+
+            border-left: 7px solid #cbd5e0;
+
+            font-size: 1.15rem;
+
+            line-height: 1.7;
+        }
+
+
+        .mes-card-result strong {
+
+            font-size: 1.2rem;
+        }
+
+
+        .mes-card-result.dentro {
+
+            border-left-color: #38a169;
+
+            background-color: #f0fff4;
+        }
+
+
+        .mes-card-result.fora {
+
+            border-left-color: #e53e3e;
+
+            background-color: #fff5f5;
+        }
+
+
+        /* =========================================================
+           EFEITO DE PISCAR DO RESULTADO
+        ========================================================= */
+
+        @keyframes piscarResultado {
+
+            0% {
+                opacity: 1;
+            }
+
+            25% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            75% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+
+        .resultado-piscando {
+
+            animation:
+                piscarResultado 0.5s ease-in-out;
+        }
+
+
+        /* =========================================================
+           BUSCA DE MOTIVOS
+        ========================================================= */
+
+        .search-box {
+
+            margin-top: 25px;
+
+            padding: 18px;
+
+            background-color: #edf2f7;
+
+            border-radius: 12px;
+
+            border: 1px solid #e2e8f0;
+        }
+
+
+        .search-box label {
+
+            font-size: 1.05rem;
+        }
+
+
+        .search-result {
+
+            margin-top: 12px;
+
+            padding: 14px;
+
+            border-radius: 8px;
+
+            background: #ffffff;
+
+            font-size: 1.05rem;
+
+            font-weight: bold;
+
+            text-align: center;
+
+            display: none;
+
+            line-height: 1.5;
+        }
+
+
+        .search-result.encontrado {
+
+            color: #2b6cb0;
+
+            border: 2px solid #3182ce;
+        }
+
+
+        .search-result.nao-encontrado {
+
+            color: #e53e3e;
+
+            border: 2px solid #e53e3e;
+        }
+
+
+        /* =========================================================
+           BANNER
+        ========================================================= */
+
+        .affiliate-banner {
+
+            margin-top: 25px;
+
+            padding: 15px;
+
+            background-color: #fffaf0;
+
+            border: 1px dashed #dd6b20;
+
+            border-radius: 10px;
+
+            text-align: center;
+
+            font-size: 1rem;
+
+            line-height: 1.5;
+        }
+
+
+        .affiliate-banner a {
+
+            color: #c05621;
+
+            font-weight: bold;
+
+            text-decoration: none;
+        }
+
+
+        /* =========================================================
+           TEXTO INFORMATIVO
+        ========================================================= */
+
+        .note {
+
+            font-size: 0.95rem;
+
+            color: #718096;
+
+            margin-top: 20px;
+
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           MODAL
+        ========================================================= */
+
+        .modal {
+
+            display: none;
+
+            position: fixed;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            background-color: rgba(0, 0, 0, 0.7);
+
+            justify-content: center;
+
+            align-items: center;
+
+            z-index: 1000;
+        }
+
+
+        .modal-content {
+
+            background: white;
+
+            padding: 28px;
+
+            border-radius: 12px;
+
+            text-align: center;
+
+            max-width: 400px;
+
+            width: 90%;
+        }
+
+
+        .modal-content h3 {
+
+            font-size: 1.5rem;
+        }
+
+
+        .modal-content p {
+
+            margin: 15px 0;
+
+            font-size: 1.1rem;
+        }
+
+
+        .close-btn {
+
+            background-color: #e53e3e;
+
+            margin-top: 15px;
+        }
+
+
+        /* =========================================================
+           CELULAR / TELAS PEQUENAS
+        ========================================================= */
+
+        @media (max-width: 800px) {
+
+            body {
+
+                padding: 12px;
+            }
+
+
+            .card {
+
+                padding: 18px;
+            }
+
+
+            h2 {
+
+                font-size: 1.6rem;
+            }
+
+
+            .layout {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .mes-row {
+
+                flex-direction: column;
+            }
+
+
+            .painel h3 {
+
+                font-size: 1.2rem;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="card">
+
+
+    <!-- =========================================================
+         TÍTULO
+    ========================================================== -->
+
+    <h2>
+
+        Verificador de Frequência Escolar
+
+        <br>
+
+        <small>
+            <footer>© 2026. Todos os direitos reservados. Criado por WILDES INÁCIO COSTA </footer>
+
+        </small>
+
+    </h2>
+
+
+    <!-- =========================================================
+         DUAS COLUNAS
+    ========================================================== -->
+
+    <div class="layout">
+
+
+        <!-- =====================================================
+             COLUNA ESQUERDA
+        ====================================================== -->
+
+        <div class="painel">
+
+            <h3>
+                📝 Dados da Frequência
+            </h3>
+
+
+            <!-- ETAPA -->
+
+            <div class="form-group">
+
+                <label for="etapa">
+                    Etapa / Nível de Ensino:
+                </label>
+
+
+                <select id="etapa">
+
+                    <option value="Pré-Escolar (4 e 5 anos)">
+                        Pré-Escolar (4 e 5 anos) — Mínimo 60%
+                    </option>
+
+
+                    <option value="Ensino Fundamental (1º ao 9º ano)">
+                        Ensino Fundamental (1º ao 9º ano) — Mínimo 75%
+                    </option>
+
+
+                    <option value="Ensino Médio (1º ao 3º ano)">
+                        Ensino Médio (1º ao 3º ano) — Mínimo 75%
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- PERÍODO -->
+
+            <div class="form-group">
+
+                <label for="periodo">
+                    Período de Apuração:
+                </label>
+
+
+                <select
+                    id="periodo"
+                    onchange="renderizarCamposMeses()"
+                >
+
+                    <option value="1">
+                        Mensal (1 Mês)
+                    </option>
+
+
+                    <option value="2" selected>
+                        Bimestral (2 Meses)
+                    </option>
+
+
+                    <option value="3">
+                        Trimestral (3 Meses)
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- CAMPOS DOS MESES -->
+
+            <div id="containerMeses"></div>
+
+
+            <!-- BOTÃO -->
+
+            <button onclick="calcularFrequencia()">
+
+                🔎 Verificar Situação
+
+            </button>
+
+
+            <!-- CONSULTA DE MOTIVOS -->
+
+            <div class="search-box">
+
+                <label for="inputMotivo">
+
+                    🔍 Consultar Motivo / Código:
+
+                </label>
+
+
+                <input
+                    type="text"
+                    id="inputMotivo"
+                    placeholder="Digite o código ou nome do motivo..."
+                    oninput="buscarMotivo()"
+                >
+
+
+                <div
+                    id="resultadoBusca"
+                    class="search-result"
+                ></div>
+
+            </div>
+
+
+            <!-- BANNER -->
+
+            <div class="affiliate-banner">
+
+                🛒 <strong>Ofertas Escolares:</strong>
+
+                <br>
+
+                Encontre cadernos, mochilas e estojos
+                em promoção na Shopee!
+
+                <br>
+
+                <a
+                    href="https://shope.ee/SEU_LINK_AQUI"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    Clique aqui para ver as ofertas
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             COLUNA DIREITA — RESULTADO
+        ====================================================== -->
+
+        <div class="painel resultado-painel">
+
+            <h3>
+                📊 Resultado da Verificação
+            </h3>
+
+
+            <div id="detalhesMeses">
+
+                <div class="resultado-vazio">
+
+                    <div>
+
+                        <div
+                            style="
+                                font-size: 3rem;
+                                margin-bottom: 15px;
+                            "
+                        >
+                            📋
+                        </div>
+
+
+                        <strong>
+                            O resultado aparecerá aqui
+                        </strong>
+
+
+                        <br>
+
+
+                        <span>
+
+                            Digite os dias letivos e as faltas
+                            e clique em
+                            <strong>
+                                Verificar Situação
+                            </strong>.
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- AVISO -->
+
+    <p class="note">
+
+        Nenhum dado é salvo.
+        Esta ferramenta realiza apenas cálculos de verificação.
+
+    </p>
+
+
+</div>
+
+
+<!-- =========================================================
+     MODAL
+========================================================== -->
+
+<div id="modalAnuncio" class="modal">
+
+    <div class="modal-content">
+
+        <h3>
+            📢 Patrocinador
+        </h3>
+
+
+        <p>
+            [Espaço do Anúncio / Vídeo / Oferta da Shopee]
+        </p>
+
+
+        <button
+            class="close-btn"
+            onclick="fecharAnuncio()"
+        >
+            Continuar para o App
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+    /* =========================================================
+       LISTA DE MOTIVOS
+    ========================================================= */
+
+    const listaDeMotivos = {
+
+        "101":
+            "Doença / Tratamento de saúde com atestado médico",
+
+        "102":
+            "Falta não justificada pela família/responsável",
+
+        "103":
+            "Mudança de residência / Transferência escolar",
+
+        "104":
+            "Problemas de transporte / Acesso à escola",
+
+        "105":
+            "Suspensão ou medida disciplinar escolar",
+
+        "atestado":
+            "Doença / Tratamento de saúde com atestado médico",
+
+        "doenca":
+            "Doença / Tratamento de saúde com atestado médico"
+
+    };
+
+
+    let contadorConsultas = 0;
+
+
+
+    /* =========================================================
+       CRIA OS CAMPOS DOS MESES
+    ========================================================= */
+
+    function renderizarCamposMeses() {
+
+
+        const qtdMeses =
+            parseInt(
+                document.getElementById('periodo').value
+            );
+
+
+        const container =
+            document.getElementById('containerMeses');
+
+
+        container.innerHTML = '';
+
+
+        /*
+         * Quando o período for alterado,
+         * o resultado volta para a mensagem inicial.
+         */
+
+        document.getElementById('detalhesMeses').innerHTML = `
+
+            <div class="resultado-vazio">
+
+                <div>
+
+                    <div
+                        style="
+                            font-size: 3rem;
+                            margin-bottom: 15px;
+                        "
+                    >
+                        📋
+                    </div>
+
+                    <strong>
+                        O resultado aparecerá aqui
+                    </strong>
+
+                    <br>
+
+                    <span>
+                        Digite os dias letivos e as faltas
+                        e clique em
+                        <strong>
+                            Verificar Situação
+                        </strong>.
+                    </span>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        /*
+         * Cria os campos de cada mês.
+         */
+
+        for (
+            let i = 1;
+            i <= qtdMeses;
+            i++
+        ) {
+
+
+            const row =
+                document.createElement('div');
+
+
+            row.className =
+                'mes-row';
+
+
+            row.innerHTML = `
+
+                <div class="mes-col">
+
+                    <label>
+                        Mês ${i} — Dias Letivos
+                    </label>
+
+                    <input
+                        type="number"
+                        class="dias-input"
+                        placeholder="Ex: 21"
+                        min="1"
+                        value="21"
+                    >
+
+                </div>
+
+
+                <div class="mes-col">
+
+                    <label>
+                        Mês ${i} — Faltas
+                    </label>
+
+                    <input
+                        type="number"
+                        class="faltas-input"
+                        placeholder="Ex: 2"
+                        min="0"
+                        value="0"
+                    >
+
+                </div>
+
+            `;
+
+
+            container.appendChild(row);
+
+        }
+
+    }
+
+
+
+    /* =========================================================
+       CALCULA A FREQUÊNCIA
+    ========================================================= */
+
+    function calcularFrequencia() {
+
+
+        const etapaValor =
+            document.getElementById('etapa').value;
+
+
+        const inputsDias =
+            document.querySelectorAll('.dias-input');
+
+
+        const inputsFaltas =
+            document.querySelectorAll('.faltas-input');
+
+
+        const painelResultado =
+            document.getElementById('detalhesMeses');
+
+
+        /*
+         * Define o percentual mínimo.
+         *
+         * Pré-Escolar = 60%
+         * Demais etapas = 75%
+         */
+
+        const minPresenca =
+            etapaValor.includes('Pré-Escolar')
+                ? 0.60
+                : 0.75;
+
+
+        let htmlMeses = '';
+
+
+
+        /* =====================================================
+           PRIMEIRO VALIDA OS DADOS
+        ====================================================== */
+
+        for (
+            let i = 0;
+            i < inputsDias.length;
+            i++
+        ) {
+
+
+            const dias =
+                parseInt(
+                    inputsDias[i].value
+                );
+
+
+            const faltas =
+                parseInt(
+                    inputsFaltas[i].value
+                );
+
+
+            /*
+             * Verifica valores inválidos.
+             */
+
+            if (
+                isNaN(dias) ||
+                dias <= 0 ||
+                isNaN(faltas) ||
+                faltas < 0
+            ) {
+
+                alert(
+                    `Por favor, preencha os valores corretamente para o Mês ${i + 1}.`
+                );
+
+                return;
+
+            }
+
+
+            /*
+             * Faltas não podem ser maiores
+             * que os dias letivos.
+             */
+
+            if (faltas > dias) {
+
+                alert(
+                    `No Mês ${i + 1}, as faltas (${faltas}) não podem superar os dias letivos (${dias}).`
+                );
+
+                return;
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           EFEITO DE PISCAR
+        ====================================================== */
+
+        /*
+         * Remove a animação anterior.
+         * Isso permite que ela seja executada
+         * novamente a cada clique.
+         */
+
+        painelResultado.classList.remove(
+            'resultado-piscando'
+        );
+
+
+        /*
+         * Força o navegador a reiniciar a animação.
+         */
+
+        void painelResultado.offsetWidth;
+
+
+        /*
+         * Adiciona a animação.
+         */
+
+        painelResultado.classList.add(
+            'resultado-piscando'
+        );
+
+
+        /*
+         * Limpa o resultado anterior
+         * durante o efeito.
+         */
+
+        painelResultado.innerHTML = '';
+
+
+
+        /* =====================================================
+           CALCULA OS NOVOS RESULTADOS
+        ====================================================== */
+
+        for (
+            let i = 0;
+            i < inputsDias.length;
+            i++
+        ) {
+
+
+            const dias =
+                parseInt(
+                    inputsDias[i].value
+                );
+
+
+            const faltas =
+                parseInt(
+                    inputsFaltas[i].value
+                );
+
+
+            /*
+             * Calcula a frequência.
+             */
+
+            const presencaMes =
+                (dias - faltas) / dias;
+
+
+            const percentualMes =
+                (presencaMes * 100).toFixed(1);
+
+
+            /*
+             * Calcula o máximo de faltas
+             * permitido para o mês.
+             */
+
+            const maxFaltasMes =
+                Math.floor(
+                    dias * (1 - minPresenca)
+                );
+
+
+            /*
+             * Verifica se está dentro do limite.
+             */
+
+            const dentroDoLimiteMes =
+                presencaMes >= minPresenca;
+
+
+
+            /* =================================================
+               MONTA O RESULTADO
+            ================================================== */
+
+            htmlMeses += `
+
+                <div
+                    class="mes-card-result
+                    ${dentroDoLimiteMes
+                        ? 'dentro'
+                        : 'fora'}"
+                >
+
+                    <strong>
+                        📌 Mês ${i + 1}:
+                    </strong>
+
+                    <br>
+
+                    <strong>
+                        ${dentroDoLimiteMes
+                            ? '✅ Dentro do Limite'
+                            : '❌ Acima do Limite'}
+                    </strong>
+
+                    <br><br>
+
+                    • Frequência do Mês:
+
+                    <strong>
+                        ${percentualMes}%
+                    </strong>
+
+                    <br>
+
+                    • Faltas:
+
+                    <strong>
+                        ${faltas}
+                    </strong>
+
+                    de
+
+                    <strong>
+                        ${dias}
+                    </strong>
+
+                    dias
+
+                    <br>
+
+                    • Máx. permitido:
+
+                    <strong>
+                        ${maxFaltasMes}
+                    </strong>
+
+                </div>
+
+            `;
+
+        }
+
+
+
+        /* =====================================================
+           MOSTRA O NOVO RESULTADO
+        ====================================================== */
+
+        /*
+         * O tempo aqui é o mesmo da animação:
+         * 500 milissegundos.
+         *
+         * Primeiro o painel pisca.
+         * Depois o novo resultado aparece.
+         */
+
+        setTimeout(function() {
+
+            painelResultado.innerHTML =
+                htmlMeses;
+
+
+            /*
+             * Remove a classe depois que a animação terminou.
+             * Assim, o próximo clique poderá executar
+             * a animação novamente.
+             */
+
+            painelResultado.classList.remove(
+                'resultado-piscando'
+            );
+
+        }, 500);
+
+
+
+        /* =====================================================
+           CONTADOR DE CONSULTAS
+        ====================================================== */
+
+        contadorConsultas++;
+
+
+        /*
+         * A cada 3 verificações aparece o modal.
+         */
+
+        if (contadorConsultas % 3 === 0) {
+
+            setTimeout(function() {
+
+                document.getElementById(
+                    'modalAnuncio'
+                ).style.display = 'flex';
+
+            }, 550);
+
+        }
+
+    }
+
+
+
+    /* =========================================================
+       CONSULTA DE MOTIVOS
+    ========================================================= */
+
+    function buscarMotivo() {
+
+
+        const termo =
+            document
+                .getElementById('inputMotivo')
+                .value
+                .trim()
+                .toLowerCase();
+
+
+        const divResultado =
+            document.getElementById(
+                'resultadoBusca'
+            );
+
+
+        /*
+         * Se não houver texto,
+         * esconde o resultado.
+         */
+
+        if (termo === '') {
+
+            divResultado.style.display =
+                'none';
+
+            return;
+
+        }
+
+
+        divResultado.style.display =
+            'block';
+
+
+
+        /*
+         * Procura o motivo.
+         */
+
+        if (listaDeMotivos[termo]) {
+
+
+            divResultado.className =
+                'search-result encontrado';
+
+
+            divResultado.innerHTML = `
+
+                📌 <strong>
+                    Motivo Encontrado:
+                </strong>
+
+                <br>
+
+                ${listaDeMotivos[termo]}
+
+            `;
+
+
+        } else {
+
+
+            divResultado.className =
+                'search-result nao-encontrado';
+
+
+            divResultado.innerText =
+                'Não existente';
+
+        }
+
+    }
+
+
+
+    /* =========================================================
+       FECHAR MODAL
+    ========================================================= */
+
+    function fecharAnuncio() {
+
+        document.getElementById(
+            'modalAnuncio'
+        ).style.display = 'none';
+
+    }
+
+
+
+    /* =========================================================
+       INICIALIZAÇÃO
+    ========================================================= */
+
+    window.onload =
+        renderizarCamposMeses;
+
+</script>
+
+
+
+</body>
+
+
+</html>
